@@ -2,6 +2,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const QUERIES = [
+  'HATU drones', 'Haminton Smith drones',
   'drones Caucasia', 'drones Bajo Cauca', 'dron Caucasia Antioquia',
   'ataque con drones Antioquia', 'drones explosivos Colombia',
   'Aerocivil drones', 'antidrones Colombia', 'drones Córdoba Colombia'
@@ -25,7 +26,7 @@ for (const q of QUERIES) {
       const k = norm(titulo);
       if (!titulo || seen.has(k)) continue;
       // solo notas sobre drones
-      if (!/dron|antidron|uas|aerocivil/i.test(titulo)) continue;
+      if (!/dron|antidron|uas|aerocivil|hatu/i.test(titulo)) continue;
       seen.add(k);
       items.push({ titulo, enlace: tag(it, 'link'), fuente, fecha: new Date(tag(it, 'pubDate') || Date.now()).toISOString(), consulta: q });
     }

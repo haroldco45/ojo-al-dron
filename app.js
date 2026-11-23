@@ -78,7 +78,7 @@
 
   /* =================== NOTICIAS =================== */
   let news = [];
-  const QUERIES = ['drones Caucasia', 'drones Bajo Cauca', 'ataque con drones Antioquia', 'drones Colombia Aerocivil', 'antidrones Colombia'];
+  const QUERIES = ['HATU drones', 'drones Caucasia', 'drones Bajo Cauca', 'ataque con drones Antioquia', 'drones Colombia Aerocivil', 'antidrones Colombia'];
   const rssUrl = q => 'https://news.google.com/rss/search?q=' + encodeURIComponent(q + ' when:7d') + '&hl=es-419&gl=CO&ceid=CO:es-419';
 
   function normTitle(t) { return t.toLowerCase().replace(/\s+-\s+[^-]+$/, '').replace(/[^a-záéíóúñü0-9 ]/g, '').slice(0, 70); }
@@ -112,7 +112,7 @@
           const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 9000);
           const r = await fetch(p(rssUrl(q)), { signal: ctrl.signal }); clearTimeout(to);
           if (!r.ok) continue; const txt = await r.text();
-          if (txt.includes('<item>')) { mergeNews(parseRss(txt)); return; }
+          if (txt.includes('<item>')) { mergeNews(parseRss(txt).map(n => Object.assign(n, { consulta: q }))); return; }
         } catch (e) {}
       }
     }));
@@ -131,6 +131,8 @@
     const lbl = t.length ? '' : `<div class="empty" style="grid-column:1/-1">${T('Hoy todavía no hay noticias nuevas. Estas son las más recientes:', 'No new stories yet today. Here are the latest:')}</div>`;
     if (!t.length) t = news.slice(0, 4);
     $('#todayNews').innerHTML = t.length ? lbl + t.slice(0, 8).map(newsCard).join('') : `<div class="empty">${T('Buscando noticias…', 'Searching news…')}</div>`;
+    const hn = news.filter(n => /hatu|haminton/i.test(n.titulo + ' ' + (n.consulta || '')));
+    $('#hatuNews').innerHTML = hn.length ? hn.slice(0, 6).map(newsCard).join('') : `<div class="empty">${T('Cuando salgan noticias de HATU aparecerán aquí.', 'HATU news will show up here.')}</div>`;
     const tk = news.slice(0, 12).map(n => `<span>${esc(n.titulo)} — ${esc(n.fuente || '')}</span>`).join('');
     $('#ticker').innerHTML = tk || `<span>${T('Ojo al Dron: la veeduría ciudadana de drones de Caucasia y el Bajo Cauca', 'Ojo al Dron: the citizen drone watch for Caucasia and Bajo Cauca')}</span>`;
   }

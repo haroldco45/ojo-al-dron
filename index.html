@@ -162,6 +162,23 @@ ul.dots{padding-left:18px} ul.dots li{margin:5px 0}
 .today-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .clock{font:800 13px Archivo;color:var(--muted)}
 
+.hatu-hero{background:linear-gradient(135deg,#0b1d2e,#12304a 60%,#1b4d74);color:#fff;border-radius:var(--r);padding:20px;position:relative;overflow:hidden}
+.hatu-hero::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:2px solid rgba(200,255,61,.35);animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hatu-hero h3{font-size:26px;color:#fff}
+.hatu-hero .handle{color:var(--lime);font:800 15px Archivo}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.stats div{background:rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center}
+.stats b{display:block;font:900 22px Archivo;color:var(--lime)}
+.stats small{font-size:11.5px;color:#b9c9d8}
+.vid{position:relative;padding-top:56.25%;border-radius:var(--r);overflow:hidden;background:#000;margin:12px 0}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.topics{display:grid;gap:10px}
+@media(min-width:720px){.topics{grid-template-columns:1fr 1fr}}
+.topic{background:#fff;border:1px solid var(--line);border-left:5px solid var(--sky);border-radius:14px;padding:12px 14px}
+.topic b{display:block;font-family:Archivo}
+.topic small{color:var(--muted)}
+.flags{font:700 12.5px Inter;color:#b9c9d8;letter-spacing:.5px}
 footer{background:var(--navy);color:#b9c9d8;padding:28px 18px 40px;font-size:13px;text-align:center}
 footer b{color:#fff}
 footer a{color:var(--lime)}
@@ -210,6 +227,7 @@ footer a{color:var(--lime)}
   <button class="tab" data-t="seguridad"><span class="es">Seguridad primero</span><span class="en">Safety first</span></button>
   <button class="tab" data-t="normas"><span class="es">Normas</span><span class="en">Rules</span></button>
   <button class="tab" data-t="peticion"><span class="es">Derecho de petición</span><span class="en">Petition</span></button>
+  <button class="tab" data-t="hatu"><span class="es">Aprende con HATU</span><span class="en">Learn with HATU</span></button>
   <button class="tab" data-t="noticias"><span class="es">Noticias</span><span class="en">News</span></button>
 </nav>
 
@@ -403,6 +421,48 @@ footer a{color:var(--lime)}
       <a href="https://www.policia.gov.co/pqrs" target="_blank" rel="noopener">Policía PQRS</a> ·
       <a href="https://www.defensoria.gov.co/formulario-unico-de-peticiones" target="_blank" rel="noopener">Defensoría</a></p>
   </div>
+</section>
+
+<!-- HATU -->
+<section class="pane" id="p-hatu">
+  <h2><span class="es">Aprende con HATU</span><span class="en">Learn with HATU</span></h2>
+  <p class="lead"><span class="es">Para vigilar bien hay que entender los drones. Te presentamos a uno de los divulgadores de drones más seguidos de Latinoamérica.</span><span class="en">To watch the sky well you need to understand drones. Meet one of Latin America's most followed drone educators.</span></p>
+  <div class="hatu-hero">
+    <span class="handle">@hatu_smith</span>
+    <h3>Haminton Smith · HATU</h3>
+    <p><span class="es">Divulgador colombiano y emprendedor de la industria de los drones. "Tester de tecnología drone". Empezó con un dron de 3 minutos de batería que todavía conserva y hoy es referente en Latinoamérica.</span><span class="en">Colombian drone educator and entrepreneur. "Drone technology tester". He started with a drone that flew for 3 minutes, which he still keeps, and is now a reference across Latin America.</span></p>
+    <div class="stats">
+      <div><b>110 mil</b><small class="es">seguidores en Instagram</small><small class="en">Instagram followers</small></div>
+      <div><b>4.453</b><small class="es">publicaciones</small><small class="en">posts</small></div>
+      <div><b>+260 mil</b><small class="es">suscriptores en YouTube</small><small class="en">YouTube subscribers</small></div>
+    </div>
+    <p class="flags">COLOMBIA · ARGENTINA · URUGUAY · VENEZUELA · PANAMÁ · ESPAÑA · PERÚ · MÉXICO</p>
+    <div class="cta">
+      <a class="btn lime" href="https://www.instagram.com/hatu_smith/" target="_blank" rel="noopener"><span class="es">Ver su Instagram</span><span class="en">See his Instagram</span></a>
+      <a class="btn ghost" id="hatuYt" href="https://www.youtube.com/results?search_query=HATU+drones" target="_blank" rel="noopener"><span class="es">Canal de YouTube HATU</span><span class="en">HATU YouTube channel</span></a>
+      <a class="btn ghost" href="https://www.threads.net/@hatu_smith" target="_blank" rel="noopener">Threads</a>
+    </div>
+  </div>
+
+  <h3 style="margin-top:20px"><span class="es">Video: HATU en CNN en Español</span><span class="en">Video: HATU on CNN en Español</span></h3>
+  <p class="lead" style="margin:0"><span class="es">Entrevista sobre los avistamientos de drones en Nueva Jersey (EE. UU.).</span><span class="en">Interview about the drone sightings in New Jersey (USA).</span></p>
+  <div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/Oy8gde6pcf4" title="HATU en CNN en Español" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+
+  <h3><span class="es">Temas que trabaja</span><span class="en">Topics he covers</span></h3>
+  <div class="topics">
+    <div class="topic"><b class="es">Guerra electrónica y antidrones</b><b class="en">Electronic warfare and counter-drone</b><small class="es">Conferencia "Nueva tecnología drone dodecabanda y guerra electrónica": la brecha entre detectar e inhibir drones.</small><small class="en">Talk "New dodeca-band drone technology and electronic warfare": the gap between detecting and jamming drones.</small></div>
+    <div class="topic"><b class="es">Drones profesionales DJI</b><b class="en">Professional DJI drones</b><small class="es">Pruebas en campo del DJI Matrice 5T con autoridades en Perú y del DJI M30T con zoom híbrido de 200x (más de 2 millones de vistas).</small><small class="en">Field tests of the DJI Matrice 5T with authorities in Peru and the DJI M30T with 200x hybrid zoom (2M+ views).</small></div>
+    <div class="topic"><b class="es">Medios y Gobierno</b><b class="en">Media and government</b><small class="es">Apariciones en RCN y CNN en Español, y en espacios del MinTIC sobre historias de emprendedores del campo.</small><small class="en">Appearances on RCN and CNN en Español, and MinTIC events on rural entrepreneurs.</small></div>
+    <div class="topic"><b class="es">Formación en Latinoamérica</b><b class="en">Training across Latin America</b><small class="es">Talleres y ferias como el Workshop de Drones en Santa Fe (Argentina) y la ExpoDron en Chile.</small><small class="en">Workshops and fairs such as the Drone Workshop in Santa Fe (Argentina) and ExpoDron in Chile.</small></div>
+    <div class="topic"><b class="es">Emprender con drones</b><b class="en">Building a drone business</b><small class="es">Su idea central: preguntarse "qué doy" y no "qué me dan", y convertir problemas locales en soluciones.</small><small class="en">His core idea: ask "what can I give" instead of "what do I get", and turn local problems into solutions.</small></div>
+    <div class="topic"><b class="es">Para la veeduría</b><b class="en">For our watch</b><small class="es">Úsalo para aprender a reconocer modelos, alcances y luces. Así tus reportes en Ojo al Dron salen más precisos.</small><small class="en">Use it to learn to recognize models, ranges and lights, so your Ojo al Dron reports are more precise.</small></div>
+  </div>
+  <div class="cta">
+    <a class="btn dark" href="https://ig.me/m/hatu_smith" target="_blank" rel="noopener"><span class="es">Escribirle a HATU</span><span class="en">Message HATU</span></a>
+  </div>
+  <h3 style="margin-top:18px"><span class="es">Noticias de HATU</span><span class="en">HATU news</span></h3>
+  <div class="news" id="hatuNews"><div class="empty">…</div></div>
+  <p class="credit"><span class="es">Contenido y marcas de @hatu_smith. Ojo al Dron solo lo recomienda y enlaza; no tiene relación comercial con él.</span><span class="en">Content and brands belong to @hatu_smith. Ojo al Dron only recommends and links to it; there is no commercial relationship.</span></p>
 </section>
 
 <!-- NOTICIAS -->
