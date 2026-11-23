@@ -50,7 +50,7 @@
 
   /* ---------- fotos reales ---------- */
   const bg = $('#heroBg');
-  PHOTOS.forEach((f, i) => { const im = new Image(); im.onerror = () => im.remove(); im.src = WM(f, 1600); im.alt = ''; if (i === 0) im.className = 'show'; bg.appendChild(im); });
+  ['img/caucasia-puente.jpg', 'img/caucasia-rio.jpg', ...PHOTOS].forEach((f, i) => { const im = new Image(); im.onerror = () => im.remove(); im.src = f.startsWith('img/') ? f : WM(f, 1600); im.alt = ''; if (i === 0) im.className = 'show'; bg.appendChild(im); });
   let hi = 0; setInterval(() => { const ims = $$('img', bg); ims[hi].classList.remove('show'); hi = (hi + 1) % ims.length; ims[hi].classList.add('show'); }, 6000);
   $$('img[data-wm]').forEach(im => { im.onerror = () => { im.closest('.photo').style.display = 'none'; }; im.src = WM(im.dataset.wm, 1000); im.loading = 'lazy'; });
 
