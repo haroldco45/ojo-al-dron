@@ -1,0 +1,22 @@
+name: Robot de noticias Ojo al Dron
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  noticias:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/noticias.mjs
+      - name: Guardar noticias
+        run: |
+          git config user.name "robot-ojo-al-dron"
+          git config user.email "actions@github.com"
+          git add noticias.json
+          git diff --cached --quiet || (git commit -m "Noticias $(TZ=America/Bogota date '+%Y-%m-%d %H:%M')" && git push)

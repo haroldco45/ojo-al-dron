@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ojo al Dron — Veeduría ciudadana de drones | Vibras Positivas HM</title>
+<meta name="description" content="Veeduría ciudadana de drones en Caucasia y el Bajo Cauca: reporta avistamientos, arma el mapa del barrio, conoce las normas del RAC 100 y envía un derecho de petición a todas las entidades de una sola vez.">
+<meta name="theme-color" content="#0b1d2e">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- Vista previa del enlace (WhatsApp, Facebook, X) con foto real -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibras Positivas HM">
+<meta property="og:title" content="Ojo al Dron — Veeduría ciudadana de drones">
+<meta property="og:description" content="Reporta drones sospechosos en tu barrio, mira el mapa de avistamientos y exige respuestas a las autoridades. Caucasia y Bajo Cauca.">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/A_drone_DJI_Mavic_2_Pro_flying.jpg/1200px-A_drone_DJI_Mavic_2_Pro_flying.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="800">
+<meta property="og:url" content="https://ojo-al-dron.netlify.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ojo al Dron — Veeduría ciudadana de drones">
+<meta name="twitter:description" content="Reporta drones sospechosos, arma el mapa del barrio y exige respuestas.">
+<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/A_drone_DJI_Mavic_2_Pro_flying.jpg/1200px-A_drone_DJI_Mavic_2_Pro_flying.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --navy:#0b1d2e; --navy2:#12304a; --sky:#2bb3ff; --lime:#c8ff3d; --red:#ff4d4d; --amber:#ffb020;
+  --ink:#0e1620; --paper:#f4f7fa; --card:#ffffff; --muted:#5d6b7a; --line:#dde4ea;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.btn,.tab,.kpi b{font-family:Archivo,Inter,sans-serif}
+body.en .es{display:none!important} body:not(.en) .en{display:none!important}
+img{max-width:100%;display:block}
+a{color:inherit}
+
+/* barra superior */
+.top{position:sticky;top:0;z-index:50;background:rgba(11,29,46,.92);backdrop-filter:blur(10px);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 14px}
+.brand{font-family:Archivo;font-weight:900;letter-spacing:.5px;font-size:18px;flex:1}
+.brand span{color:var(--lime)}
+.pill{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:99px;padding:7px 13px;font:600 13px Inter;cursor:pointer}
+.pill.on{background:var(--lime);color:var(--navy);border-color:var(--lime)}
+#btnRefresh.spin{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.4}}
+
+/* hero */
+.hero{position:relative;min-height:78vh;display:flex;align-items:flex-end;overflow:hidden;color:#fff;background:#071320}
+.hero .bg{position:absolute;inset:0;background:radial-gradient(circle at 70% 25%,#1d4a6e 0%,#0b1d2e 55%,#071320 100%)}
+.hero .bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.6s ease;animation:kb 18s ease-in-out infinite alternate}
+.hero .bg img.show{opacity:1}
+@keyframes kb{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,19,32,.15) 0%,rgba(7,19,32,.55) 45%,rgba(7,19,32,.96) 100%)}
+.hero .in{position:relative;z-index:2;padding:28px 20px 34px;max-width:920px;margin:0 auto;width:100%}
+.tag{display:inline-block;background:var(--red);color:#fff;font:800 11px Archivo;letter-spacing:1.5px;text-transform:uppercase;padding:5px 10px;border-radius:6px;margin-bottom:14px}
+.tag.live::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:7px;animation:pulse 1.2s infinite;vertical-align:1px}
+.hero h1{font-size:clamp(38px,9vw,76px);line-height:.95;font-weight:900;letter-spacing:-1.5px}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero p{font-size:17px;max-width:620px;margin-top:14px;color:#d7e3ee}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{border:0;border-radius:14px;padding:14px 20px;font-weight:800;font-size:15px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.lime{background:var(--lime);color:var(--navy)}
+.btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35)}
+.btn.dark{background:var(--navy);color:#fff}
+.btn.red{background:var(--red);color:#fff}
+.btn.full{width:100%}
+
+/* ticker */
+.ticker{background:var(--lime);color:var(--navy);overflow:hidden;white-space:nowrap;font:700 14px Inter;padding:10px 0}
+.ticker .run{display:inline-block;padding-left:100%;animation:tick 60s linear infinite}
+.ticker .run span{margin-right:48px}
+@keyframes tick{to{transform:translateX(-100%)}}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:920px;margin:-1px auto 0;padding:18px 16px}
+@media(min-width:720px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--navy);color:#fff;border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.kpi b{display:block;font-size:34px;font-weight:900;color:var(--lime);line-height:1}
+.kpi small{display:block;margin-top:6px;font-size:12.5px;color:#b9c9d8}
+.kpi i{font-style:normal;font-size:10.5px;color:#7f98ad;display:block;margin-top:6px}
+
+/* tabs */
+.tabs{position:sticky;top:52px;z-index:40;background:var(--paper);display:flex;gap:6px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:9px 15px;font-weight:700;font-size:14px;cursor:pointer;color:var(--ink)}
+.tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+main{max-width:920px;margin:0 auto;padding:6px 16px 90px}
+section.pane{display:none;animation:fade .35s ease}
+section.pane.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{font-size:28px;font-weight:900;letter-spacing:-.5px;margin:22px 0 6px}
+h3{font-size:18px;font-weight:800;margin:4px 0 6px}
+.lead{color:var(--muted);margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
+.card.dark{background:var(--navy);color:#e8f0f7;border-color:var(--navy)}
+.card.warn{background:#fff4f4;border-color:#ffc9c9}
+.card.warn h3{color:#c62828}
+
+/* foto + texto */
+.photo{border-radius:var(--r);overflow:hidden;position:relative;margin:14px 0;background:#0b1d2e}
+.photo img{width:100%;height:240px;object-fit:cover;transition:transform 6s ease}
+.photo:hover img{transform:scale(1.06)}
+.photo figcaption{position:absolute;left:0;right:0;bottom:0;padding:30px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:12px}
+
+/* noticias */
+.news{display:grid;gap:12px}
+@media(min-width:720px){.news{grid-template-columns:1fr 1fr}}
+.nw{display:flex;gap:12px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;text-decoration:none;transition:transform .2s, box-shadow .2s}
+.nw:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(11,29,46,.12)}
+.nw .ph{flex:none;width:108px;background:#ccd8e2 center/cover}
+.nw .tx{padding:12px 12px 12px 0}
+.nw .tx b{display:block;font-size:14.5px;line-height:1.3}
+.nw .tx small{color:var(--muted);font-size:12px}
+.badge{display:inline-block;font:800 10px Archivo;letter-spacing:1px;text-transform:uppercase;background:var(--red);color:#fff;border-radius:5px;padding:2px 6px;margin-right:6px}
+.search{display:flex;gap:8px;margin:10px 0}
+.search input{flex:1}
+.empty{color:var(--muted);text-align:center;padding:24px;font-size:14px}
+
+/* formularios */
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:15px Inter;background:#fff;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:8px 12px;font:600 13px Inter;cursor:pointer}
+.chip.on{background:var(--sky);border-color:var(--sky);color:#fff}
+.gps{font-size:13px;color:var(--muted);margin-top:6px}
+#preview{margin-top:8px;border-radius:12px;max-height:200px;object-fit:cover;display:none}
+
+/* lista reportes */
+.rep{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.rep img{width:74px;height:74px;border-radius:10px;object-fit:cover;flex:none;background:#dfe7ee}
+.rep .ph0{width:74px;height:74px;border-radius:10px;flex:none;background:linear-gradient(135deg,var(--navy),var(--navy2));color:var(--lime);display:flex;align-items:center;justify-content:center;font:900 12px Archivo;text-align:center;padding:4px}
+.rep b{display:block}
+.rep small{color:var(--muted)}
+.rep .lv{display:inline-block;font:800 10px Archivo;letter-spacing:.8px;text-transform:uppercase;border-radius:5px;padding:2px 6px;color:#fff}
+.lv.alto{background:var(--red)} .lv.medio{background:var(--amber)} .lv.bajo{background:#3aa76d}
+.rep .acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mini{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 10px;font:600 12px Inter;cursor:pointer}
+#map{height:420px;border-radius:var(--r);border:1px solid var(--line);margin:12px 0;z-index:1}
+
+/* pasos */
+.steps{counter-reset:s;list-style:none}
+.steps li{counter-increment:s;position:relative;padding:4px 0 14px 44px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--lime);font:900 14px Archivo;display:flex;align-items:center;justify-content:center}
+.steps li b{display:block}
+ul.dots{padding-left:18px} ul.dots li{margin:5px 0}
+
+/* petición */
+.pet{white-space:pre-wrap;font:13.5px/1.55 Inter;background:#f7fafc;border:1px dashed #b9c8d6;border-radius:14px;padding:14px;max-height:360px;overflow:auto}
+.dest{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.dest span{background:#e8f4ff;color:#0b4f80;border-radius:8px;padding:4px 8px;font-size:12px;font-weight:600}
+
+/* hoy */
+.today-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.clock{font:800 13px Archivo;color:var(--muted)}
+
+footer{background:var(--navy);color:#b9c9d8;padding:28px 18px 40px;font-size:13px;text-align:center}
+footer b{color:#fff}
+footer a{color:var(--lime)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(120px);background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;z-index:999;transition:transform .3s;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.credit{font-size:11px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">OJO AL <span>DRON</span></div>
+  <button class="pill" id="btnRefresh" title="Actualizar"><span class="es">Actualizar</span><span class="en">Refresh</span></button>
+  <button class="pill on" id="lgES">ES</button>
+  <button class="pill" id="lgEN">EN</button>
+</header>
+
+<section class="hero">
+  <div class="bg" id="heroBg"></div>
+  <div class="in">
+    <span class="tag live"><span class="es">Veeduría ciudadana · Caucasia y Bajo Cauca</span><span class="en">Citizen watch · Caucasia &amp; Bajo Cauca</span></span>
+    <h1><span class="es">Ojo al <em>dron.</em><br>El cielo del barrio también se vigila.</span><span class="en">Eyes on the <em>drone.</em><br>Our neighborhood sky is watched too.</span></h1>
+    <p><span class="es">Reporta cada dron sospechoso con foto, hora y ubicación. Juntos armamos el mapa, el consolidado y la denuncia. Sin armas, sin inhibidores: con evidencia.</span><span class="en">Report every suspicious drone with photo, time and location. Together we build the map, the record and the complaint. No weapons, no jammers: evidence.</span></p>
+    <div class="cta">
+      <button class="btn lime" data-go="reportar"><span class="es">Reportar un dron</span><span class="en">Report a drone</span></button>
+      <button class="btn ghost" data-go="mapa"><span class="es">Ver el mapa</span><span class="en">See the map</span></button>
+      <button class="btn ghost" data-go="peticion"><span class="es">Derecho de petición</span><span class="en">Formal petition</span></button>
+    </div>
+  </div>
+</section>
+
+<div class="ticker"><div class="run" id="ticker"><span>Cargando noticias de drones en Colombia…</span></div></div>
+
+<div class="kpis">
+  <div class="kpi"><b data-count="318">0</b><small class="es">ataques con drones explosivos en 2026 (hasta el 1 de octubre)</small><small class="en">explosive drone attacks in 2026 (through Oct 1)</small><i>FIP · Vanguardia</i></div>
+  <div class="kpi"><b data-count="146" data-suf="%">0</b><small class="es">aumento de acciones con drones en el primer semestre de 2026</small><small class="en">rise in drone actions, first half of 2026</small><i>Defensoría del Pueblo · El Colombiano</i></div>
+  <div class="kpi"><b data-count="463">0</b><small class="es">drones retenidos por la DIAN en Buenaventura y Cartagena</small><small class="en">drones seized by DIAN in Buenaventura &amp; Cartagena</small><i>Cambio · nov 2026</i></div>
+  <div class="kpi"><b id="kMine">0</b><small class="es">avistamientos registrados en este celular</small><small class="en">sightings logged on this phone</small><i class="es">Tu veeduría</i><i class="en">Your watch</i></div>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-t="hoy"><span class="es">Hoy</span><span class="en">Today</span></button>
+  <button class="tab" data-t="reportar"><span class="es">Reportar</span><span class="en">Report</span></button>
+  <button class="tab" data-t="mapa"><span class="es">Mapa y casos</span><span class="en">Map &amp; cases</span></button>
+  <button class="tab" data-t="detectar"><span class="es">Detectar con el celular</span><span class="en">Detect with your phone</span></button>
+  <button class="tab" data-t="seguridad"><span class="es">Seguridad primero</span><span class="en">Safety first</span></button>
+  <button class="tab" data-t="normas"><span class="es">Normas</span><span class="en">Rules</span></button>
+  <button class="tab" data-t="peticion"><span class="es">Derecho de petición</span><span class="en">Petition</span></button>
+  <button class="tab" data-t="noticias"><span class="es">Noticias</span><span class="en">News</span></button>
+</nav>
+
+<main>
+
+<!-- HOY -->
+<section class="pane on" id="p-hoy">
+  <div class="today-h"><h2><span class="es">Hoy</span><span class="en">Today</span></h2><span class="clock" id="clock"></span></div>
+  <p class="lead"><span class="es">Lo más reciente sobre drones en Colombia y lo que la comunidad reportó hoy. Se actualiza cada vez que entras.</span><span class="en">The latest on drones in Colombia and what the community reported today. Refreshes every time you open it.</span></p>
+  <div class="card dark" id="todayMine"></div>
+  <h3><span class="es">Noticias de hoy</span><span class="en">Today's news</span></h3>
+  <div class="news" id="todayNews"><div class="empty">…</div></div>
+  <figure class="photo"><img data-wm="Mavic_2_Pro_flying_over_Utsunomiya.jpg" alt="Dron sobrevolando una ciudad"><figcaption><span class="es">Un dron de consumo pesa menos de 1 kg y puede verse a cientos de metros. Foto: Wikimedia Commons (CC).</span><span class="en">A consumer drone weighs under 1 kg and can be seen hundreds of meters away. Photo: Wikimedia Commons (CC).</span></figcaption></figure>
+</section>
+
+<!-- REPORTAR -->
+<section class="pane" id="p-reportar">
+  <h2><span class="es">Reportar un avistamiento</span><span class="en">Report a sighting</span></h2>
+  <p class="lead"><span class="es">Solo registra lo que ves desde un lugar seguro. Si el dron parece llevar algo colgando o vuela cerca de la fuerza pública, aléjate y llama al 123 antes de cualquier otra cosa.</span><span class="en">Only log what you see from a safe place. If the drone seems to carry something or flies near police or army, move away and call 123 first.</span></p>
+  <div class="card">
+    <label><span class="es">Fecha y hora (Colombia)</span><span class="en">Date and time (Colombia)</span></label>
+    <input type="datetime-local" id="fWhen">
+    <label><span class="es">¿Qué viste?</span><span class="en">What did you see?</span></label>
+    <div class="chips" id="fType">
+      <button class="chip" data-v="Sobrevuelo de vivienda" data-en="Hovering over a home">Sobrevuelo de vivienda</button>
+      <button class="chip" data-v="Posible grabación / espionaje" data-en="Possible filming / spying">Posible grabación / espionaje</button>
+      <button class="chip" data-v="Vuelo nocturno" data-en="Night flight">Vuelo nocturno</button>
+      <button class="chip" data-v="Cerca de estación, base o colegio" data-en="Near police/army base or school">Cerca de estación, base o colegio</button>
+      <button class="chip" data-v="Lleva carga colgando" data-en="Carrying a payload">Lleva carga colgando</button>
+      <button class="chip" data-v="Recurrente (misma hora)" data-en="Recurring (same time)">Recurrente (misma hora)</button>
+    </div>
+    <div class="row">
+      <div><label><span class="es">Barrio o vereda</span><span class="en">Neighborhood</span></label><input id="fBarrio" placeholder="Colinas del Portal"></div>
+      <div><label><span class="es">Altura aproximada</span><span class="en">Approx. height</span></label>
+        <select id="fAlt"><option>Muy bajo (menos de 30 m)</option><option>Bajo (30 a 60 m)</option><option>Medio (60 a 120 m)</option><option>Alto (más de 120 m)</option></select></div>
+    </div>
+    <div class="row">
+      <div><label><span class="es">Duración</span><span class="en">Duration</span></label>
+        <select id="fDur"><option>Menos de 1 minuto</option><option>1 a 5 minutos</option><option>5 a 15 minutos</option><option>Más de 15 minutos</option></select></div>
+      <div><label><span class="es">Luces</span><span class="en">Lights</span></label>
+        <select id="fLuz"><option>No vi luces</option><option>Luces rojas/verdes</option><option>Luz blanca fuerte</option><option>Luces apagadas de noche</option></select></div>
+    </div>
+    <label><span class="es">¿De dónde salió o hacia dónde se fue?</span><span class="en">Where did it come from or go?</span></label>
+    <input id="fDir" placeholder="Ej.: salió del lote detrás de la cancha, se fue hacia el río">
+    <label><span class="es">Datos de Drone Scanner (si los tienes)</span><span class="en">Drone Scanner data (if any)</span></label>
+    <input id="fRid" placeholder="Número de serie, modelo, ubicación del piloto">
+    <label><span class="es">Descripción</span><span class="en">Description</span></label>
+    <textarea id="fDesc" placeholder="Color, tamaño, ruido, qué hacía…"></textarea>
+    <label><span class="es">Ubicación</span><span class="en">Location</span></label>
+    <button class="btn dark full" id="btnGps"><span class="es">Usar mi ubicación actual</span><span class="en">Use my current location</span></button>
+    <div class="gps" id="gpsTxt"></div>
+    <label><span class="es">Foto o captura del video</span><span class="en">Photo or video frame</span></label>
+    <input type="file" accept="image/*" capture="environment" id="fFoto">
+    <img id="preview" alt="">
+    <div style="height:14px"></div>
+    <button class="btn lime full" id="btnSave"><span class="es">Guardar avistamiento</span><span class="en">Save sighting</span></button>
+    <p class="credit"><span class="es">Se guarda en tu celular. Tú decides cuándo compartirlo con el grupo del barrio o anexarlo a la denuncia.</span><span class="en">Saved on your phone. You decide when to share it with your neighborhood group or attach it to the complaint.</span></p>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section class="pane" id="p-mapa">
+  <h2><span class="es">Mapa y casos</span><span class="en">Map &amp; cases</span></h2>
+  <p class="lead"><span class="es">Un patrón repetido con varios vecinos pesa mucho más que una queja suelta. Junta los reportes del barrio aquí y exporta el consolidado.</span><span class="en">A pattern reported by several neighbors weighs far more than a single complaint. Gather reports here and export the record.</span></p>
+  <div id="map"></div>
+  <div class="cta" style="margin:0 0 6px">
+    <button class="btn dark" id="btnCsv"><span class="es">Exportar consolidado (CSV)</span><span class="en">Export record (CSV)</span></button>
+    <button class="btn dark" id="btnResumen"><span class="es">Enviar resumen por WhatsApp</span><span class="en">Send summary via WhatsApp</span></button>
+    <label class="btn ghost" style="background:#fff;color:var(--navy);border:1px solid var(--line);margin:0"><span class="es">Importar reportes de un vecino</span><span class="en">Import a neighbor's reports</span><input type="file" id="fImport" accept=".json" hidden></label>
+  </div>
+  <div id="repList"></div>
+</section>
+
+<!-- DETECTAR -->
+<section class="pane" id="p-detectar">
+  <h2><span class="es">Detecta drones con el celular</span><span class="en">Detect drones with your phone</span></h2>
+  <p class="lead"><span class="es">El celular no puede tumbar ni desviar un dron, pero sí puede escuchar lo que el dron anuncia. Muchos drones modernos transmiten su identificación remota (Remote ID) por Bluetooth y WiFi: número de serie, posición, altura y desde dónde despegó el piloto.</span><span class="en">A phone can't bring down or redirect a drone, but it can listen to what the drone broadcasts. Many modern drones transmit Remote ID over Bluetooth and Wi-Fi: serial number, position, height and the pilot's take-off point.</span></p>
+  <figure class="photo"><img data-wm="DJI_Mavic2Pro_RC.jpg" alt="Control remoto de un dron"><figcaption><span class="es">El piloto casi siempre está cerca y a la vista del dron. Foto: Wikimedia Commons (CC).</span><span class="en">The pilot is almost always nearby, within sight of the drone. Photo: Wikimedia Commons (CC).</span></figcaption></figure>
+  <div class="card">
+    <h3><span class="es">Paso a paso con Drone Scanner (gratis)</span><span class="en">Step by step with Drone Scanner (free)</span></h3>
+    <ol class="steps">
+      <li><b class="es">Instala Drone Scanner</b><b class="en">Install Drone Scanner</b><span class="es">Es de Dronetag. En Android lee Bluetooth y WiFi; en iPhone solo Bluetooth, así que muchos DJI no aparecen en iPhone.</span><span class="en">Made by Dronetag. On Android it reads Bluetooth and Wi-Fi; on iPhone only Bluetooth, so many DJI drones won't show on iPhone.</span></li>
+      <li><b class="es">Activa Bluetooth, WiFi y ubicación</b><b class="en">Turn on Bluetooth, Wi-Fi and location</b><span class="es">Sin esos tres la app no puede escuchar las señales.</span><span class="en">Without all three the app can't hear the signals.</span></li>
+      <li><b class="es">Abre el radar cuando veas el dron</b><b class="en">Open the radar when you see the drone</b><span class="es">Si el dron transmite Remote ID, aparece en el mapa con su serie y la posición del piloto.</span><span class="en">If the drone broadcasts Remote ID, it shows on the map with its serial and the pilot's position.</span></li>
+      <li><b class="es">Haz captura de pantalla y exporta</b><b class="en">Screenshot and export</b><span class="es">La app exporta los datos. Copia la serie y el modelo en el reporte de Ojo al Dron.</span><span class="en">The app exports the data. Copy the serial and model into your Ojo al Dron report.</span></li>
+      <li><b class="es">No vayas a buscar al piloto</b><b class="en">Don't go after the pilot</b><span class="es">Esos datos son para las autoridades. Encararlo te pone en riesgo y puede dañar el caso.</span><span class="en">That data is for the authorities. Confronting them puts you at risk and can harm the case.</span></li>
+    </ol>
+    <div class="cta">
+      <a class="btn dark" href="https://play.google.com/store/apps/details?id=cz.dronetag.dronescanner" target="_blank" rel="noopener">Google Play</a>
+      <a class="btn dark" href="https://apps.apple.com/app/drone-scanner/id1644548782" target="_blank" rel="noopener">App Store</a>
+    </div>
+  </div>
+  <div class="card warn">
+    <h3><span class="es">Ojo con las apps "inhibidoras"</span><span class="en">Beware of "jammer" apps</span></h3>
+    <p><span class="es">Ninguna app convierte el celular en inhibidor: el radio del teléfono no transmite así. Las que lo prometen son engaño o malware. Además, inhibir señales es ilegal para particulares: el espectro lo administran el MinTIC y la ANE.</span><span class="en">No app turns a phone into a jammer: the phone's radio can't transmit that way. Apps that promise it are scams or malware. Jamming is also illegal for private citizens: the spectrum is managed by MinTIC and ANE.</span></p>
+  </div>
+  <div class="card">
+    <h3><span class="es">Sin Remote ID, también se puede</span><span class="en">No Remote ID? Still useful</span></h3>
+    <ul class="dots">
+      <li class="es">Graba el dron con zoom y apunta la hora exacta.</li><li class="en">Film the drone with zoom and note the exact time.</li>
+      <li class="es">Fíjate desde dónde despega y dónde aterriza: casi siempre el piloto está a la vista.</li><li class="en">Watch where it takes off and lands: the pilot is usually in sight.</li>
+      <li class="es">Anota color, tamaño, número de hélices, luces y ruido.</li><li class="en">Note color, size, number of rotors, lights and noise.</li>
+      <li class="es">Pide a otros vecinos que lo registren al mismo tiempo desde otro ángulo.</li><li class="en">Ask neighbors to log it at the same time from another angle.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SEGURIDAD -->
+<section class="pane" id="p-seguridad">
+  <h2><span class="es">Seguridad primero</span><span class="en">Safety first</span></h2>
+  <p class="lead"><span class="es">En la región hay grupos armados que usan drones con explosivos. Una veeduría ciudadana observa y reporta; nunca interviene.</span><span class="en">Armed groups in the region use drones with explosives. A citizen watch observes and reports; it never intervenes.</span></p>
+  <div class="card warn">
+    <h3><span class="es">Si el dron lleva algo colgando o se acerca a la fuerza pública</span><span class="en">If the drone carries something or approaches police or army</span></h3>
+    <ol class="steps">
+      <li><b class="es">Aléjate y busca techo</b><b class="en">Move away and get under a roof</b><span class="es">Entra a una construcción sólida y lejos de ventanas.</span><span class="en">Go into a solid building, away from windows.</span></li>
+      <li><b class="es">Llama al 123</b><b class="en">Call 123</b><span class="es">Di el barrio, la dirección del vuelo y qué lleva.</span><span class="en">Give the neighborhood, flight direction and what it carries.</span></li>
+      <li><b class="es">Avisa a tu cuadra</b><b class="en">Warn your block</b><span class="es">Por el grupo de WhatsApp del barrio, sin causar pánico.</span><span class="en">Via the neighborhood WhatsApp group, without causing panic.</span></li>
+      <li><b class="es">Si cae algo, no lo toques</b><b class="en">If something drops, don't touch it</b><span class="es">Aleja a la gente y espera a las autoridades.</span><span class="en">Keep people away and wait for authorities.</span></li>
+    </ol>
+    <a class="btn red full" href="tel:123"><span class="es">Llamar al 123</span><span class="en">Call 123</span></a>
+  </div>
+  <div class="card">
+    <h3><span class="es">Lo que nunca se debe hacer</span><span class="en">Never do this</span></h3>
+    <ul class="dots">
+      <li class="es">Disparar, tirar piedras o lanzar objetos al dron: puede caer sobre alguien y el investigado serías tú.</li><li class="en">Shoot at it or throw things: it may fall on someone and you'd be the one investigated.</li>
+      <li class="es">Usar inhibidores: es ilegal y tumba también el WiFi y la señal de los vecinos.</li><li class="en">Use jammers: illegal, and it also knocks out neighbors' Wi-Fi and phone signal.</li>
+      <li class="es">Ir a encarar al piloto.</li><li class="en">Go confront the pilot.</li>
+      <li class="es">Publicar datos personales de alguien sin pruebas.</li><li class="en">Post someone's personal data without proof.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3><span class="es">Protección legal para tu casa</span><span class="en">Legal protection for your home</span></h3>
+    <ul class="dots">
+      <li class="es">Polisombra o malla sobre patio y terraza.</li><li class="en">Shade cloth or mesh over patio and terrace.</li>
+      <li class="es">Película o cortinas en ventanas altas.</li><li class="en">Film or curtains on upper windows.</li>
+      <li class="es">Luces LED potentes hacia arriba de noche: encandilan la cámara sin dañar nada.</li><li class="en">Strong upward LED lights at night: they blind the camera without damaging anything.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- NORMAS -->
+<section class="pane" id="p-normas">
+  <h2><span class="es">Lo que dice la norma</span><span class="en">What the rules say</span></h2>
+  <p class="lead"><span class="es">En Colombia los drones se rigen por el RAC 100 de la Aerocivil (Resolución 01983 de 2023).</span><span class="en">In Colombia drones are governed by Aerocivil's RAC 100 (Resolution 01983 of 2023).</span></p>
+  <figure class="photo"><img data-wm="DJI_-_Drohne_Mavic_3.JPG" alt="Dron DJI Mavic 3"><figcaption><span class="es">Todo dron de 200 gramos o más debe registrarse ante la Aerocivil. Foto: Wikimedia Commons (CC).</span><span class="en">Every drone of 200 grams or more must be registered with Aerocivil. Photo: Wikimedia Commons (CC).</span></figcaption></figure>
+  <div class="card">
+    <ul class="dots">
+      <li><b class="es">Registro obligatorio:</b><b class="en">Mandatory registration:</b> <span class="es">todo dron de 200 g o más se inscribe en la plataforma UAS de la Aerocivil.</span><span class="en">every drone of 200 g or more is registered on Aerocivil's UAS platform.</span></li>
+      <li><b class="es">Categoría abierta:</b><b class="en">Open category:</b> <span class="es">los vuelos recreativos de hasta 2 kg no necesitan permiso previo si cumplen los límites del RAC 100.</span><span class="en">recreational flights up to 2 kg need no prior permit if they meet RAC 100 limits.</span></li>
+      <li><b class="es">Multas:</b><b class="en">Fines:</b> <span class="es">volar sin registro o en zonas restringidas puede costar 370 UVT, unos $19,37 millones en 2026.</span><span class="en">flying unregistered or in restricted zones can cost 370 UVT, about COP 19.37 million in 2026.</span></li>
+      <li><b class="es">Privacidad:</b><b class="en">Privacy:</b> <span class="es">grabar a personas en su casa sin autorización puede violar la intimidad y la protección de datos (Ley 1581 de 2012) y es denunciable.</span><span class="en">filming people at home without consent may violate privacy and data protection (Law 1581 of 2012) and can be reported.</span></li>
+      <li><b class="es">Convivencia:</b><b class="en">Coexistence:</b> <span class="es">la Inspección de Policía puede recibir querellas por perturbación (Ley 1801 de 2016).</span><span class="en">the Police Inspection can take complaints for disturbance (Law 1801 of 2016).</span></li>
+    </ul>
+  </div>
+  <div class="card dark">
+    <h3><span class="es">¿A quién acudir?</span><span class="en">Who to contact?</span></h3>
+    <ul class="dots">
+      <li><b>123</b> — <span class="es">emergencia, dron con carga o ataque.</span><span class="en">emergency, drone with payload or attack.</span></li>
+      <li><b>Aerocivil</b> — atencionalciudadano@aerocivil.gov.co · 01 8000 112373</li>
+      <li><b class="es">Alcaldía de Caucasia</b><b class="en">Caucasia City Hall</b> — contactenos@caucasia-antioquia.gov.co · (604) 814 91 40</li>
+      <li><b class="es">Personería de Caucasia</b><b class="en">Caucasia Ombudsman office</b> — personeria@caucasia-antioquia.gov.co</li>
+      <li><b class="es">Gobernación de Antioquia</b><b class="en">Antioquia Government</b> — gestiondocumental@antioquia.gov.co</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PETICIÓN -->
+<section class="pane" id="p-peticion">
+  <h2><span class="es">Derecho de petición</span><span class="en">Formal petition</span></h2>
+  <p class="lead"><span class="es">Exige a todas las entidades, de una sola vez, que digan qué están haciendo frente a los drones en Caucasia. Tienen 15 días hábiles para responder (Ley 1755 de 2015).</span><span class="en">Ask every agency at once what they are doing about drones in Caucasia. They have 15 business days to answer (Law 1755 of 2015). The letter is in Spanish, as required by Colombian agencies.</span></p>
+  <div class="card">
+    <div class="row">
+      <div><label><span class="es">Nombre completo</span><span class="en">Full name</span></label><input id="pNom"></div>
+      <div><label><span class="es">Cédula</span><span class="en">ID number</span></label><input id="pCc" inputmode="numeric"></div>
+    </div>
+    <div class="row">
+      <div><label><span class="es">Correo para la respuesta</span><span class="en">Email for the reply</span></label><input id="pMail" type="email"></div>
+      <div><label><span class="es">Celular</span><span class="en">Phone</span></label><input id="pTel" inputmode="tel"></div>
+    </div>
+    <label><span class="es">Barrio o vereda</span><span class="en">Neighborhood</span></label><input id="pBarrio" placeholder="Colinas del Portal">
+    <label><input type="checkbox" id="pAnexo" checked style="width:auto;margin-right:6px"><span class="es">Incluir el consolidado de mis avistamientos</span><span class="en">Include my sightings record</span></label>
+    <p class="credit" style="margin-top:12px"><span class="es">Se envía a:</span><span class="en">Sent to:</span></p>
+    <div class="dest" id="destList"></div>
+    <div class="pet" id="petTxt"></div>
+    <div class="cta">
+      <button class="btn lime" id="btnMail"><span class="es">Enviar a todas las entidades</span><span class="en">Send to all agencies</span></button>
+      <button class="btn dark" id="btnCopy"><span class="es">Copiar texto</span><span class="en">Copy text</span></button>
+      <button class="btn dark" id="btnWaPet"><span class="es">Compartir por WhatsApp</span><span class="en">Share via WhatsApp</span></button>
+    </div>
+    <p class="credit"><span class="es">La Policía y la Defensoría reciben por formulario web; abre los enlaces y pega el texto:</span><span class="en">Police and Ombudsman take web forms; open the links and paste the text:</span>
+      <a href="https://www.policia.gov.co/pqrs" target="_blank" rel="noopener">Policía PQRS</a> ·
+      <a href="https://www.defensoria.gov.co/formulario-unico-de-peticiones" target="_blank" rel="noopener">Defensoría</a></p>
+  </div>
+</section>
+
+<!-- NOTICIAS -->
+<section class="pane" id="p-noticias">
+  <h2><span class="es">Noticias de drones</span><span class="en">Drone news</span></h2>
+  <p class="lead"><span class="es">Un robot trae noticias reales cada 30 minutos y, además, la app busca en vivo al abrir.</span><span class="en">A robot brings real news every 30 minutes, and the app also searches live when it opens.</span> <span id="newsStamp" class="credit"></span></p>
+  <div class="search"><input id="q" placeholder="Buscar: Caucasia, Bajo Cauca, antidrones…"></div>
+  <div class="news" id="allNews"><div class="empty">…</div></div>
+</section>
+
+</main>
+
+<footer>
+  <p><b>Ojo al Dron</b> · <span class="es">una app ciudadana de</span><span class="en">a citizen app by</span> <b>Vibras Positivas HM</b> · Caucasia, Antioquia</p>
+  <p style="margin-top:6px">WhatsApp <a href="https://wa.me/573117700431">311 770 0431</a> · <a href="https://vibraspositivashm.com" target="_blank" rel="noopener">vibraspositivashm.com</a></p>
+  <p style="margin-top:10px;font-size:11.5px"><span class="es">Fotos: Wikimedia Commons (licencias Creative Commons). Cifras: FIP, Defensoría del Pueblo, DIAN, según prensa nacional. Esta app no reemplaza la denuncia ante las autoridades.</span><span class="en">Photos: Wikimedia Commons (Creative Commons licenses). Figures: FIP, Ombudsman, DIAN, per national press. This app does not replace filing a report with the authorities.</span></p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
